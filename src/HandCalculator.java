@@ -37,9 +37,13 @@ public class HandCalculator {
                         cardValue = 9;
                         break;
                     case 'K':
+                    case 'k':
                     case 'Q':
+                    case 'q':
                     case 'J':
+                    case 'j':
                     case 'T':
+                    case 't':
                         cardValue = 10;
                         break;
                 }

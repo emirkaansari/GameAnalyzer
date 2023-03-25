@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -5,22 +6,24 @@ import pojo.Game;
 import pojo.Turn;
 
 public class RuleChecker {
-    public void findFaultyTurns(Map<Long, Game> gamesById) {
+    public List<String> findFaultyTurns(Map<Long, Game> gamesById) {
         HandCalculator handCalculator = new HandCalculator();
-
+        List<String> unsatisfiedTurns = new ArrayList<>();
         for (Map.Entry<Long, Game> entry : gamesById.entrySet()) {
-            long gameId = entry.getKey();
+            //long gameId = entry.getKey();
             Game game = entry.getValue();
             List<Turn> turns = game.getTurns();
+
             Turn preTurn = turns.get(0);
+            boolean satisfied = true;
 
             for (int i = 0; i < turns.size(); i++) {
                 if (i > 0) {
-                     preTurn = turns.get(i - 1);
+                    preTurn = turns.get(i - 1);
                 }
                 Turn turn = turns.get(i);
                 // do something with the turn
-                
+
                 int[] dealerResult = handCalculator.calculateHand(turn.getDealerHand());
                 Result dealer = new Result(dealerResult[0], dealerResult[1], dealerResult[2]);
 
@@ -32,32 +35,91 @@ public class RuleChecker {
 
                 switch (action) {
                     case "P Joined":
-                    if(i == 0 && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2 
-                    && player.getCardCount() == 2 && player.getUnknownCardCount() == 0)
-                        break;
+                        if (i == 0 && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2
+                                && player.getCardCount() == 2 && player.getUnknownCardCount() == 0) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "P Hit":
-                    if((preAction.equals("P Joined") || preAction.equals("P Hit") || preAction.equals("D Redeal")) 
-                    && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2 && player.getUnknownCardCount() == 0 && player.getHandValue() < 21)
-                        break;
+                        if ((preAction.equals("P Joined") || preAction.equals("P Hit") || preAction.equals("D Redeal"))
+                                && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2
+                                && player.getUnknownCardCount() == 0 && player.getHandValue() < 20) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "P Stand":
-                    if((preAction.equals("P Joined") || preAction.equals("P Hit") || preAction.equals("D Redeal")) 
-                    && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2 && player.getUnknownCardCount() == 0 && player.getHandValue() < 21)
-                        break;
+                        if ((preAction.equals("P Joined") || preAction.equals("P Hit") || preAction.equals("D Redeal"))
+                                && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2
+                                && player.getUnknownCardCount() == 0 && player.getHandValue() < 22) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "D Show":
-                    
-                    
-                        break;
+                        if ((preAction.equals("P Stand"))
+                                && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2
+                                && player.getUnknownCardCount() == 0 && player.getHandValue() < 22) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "D Hit":
-                      
-                        break;
+                        if ((preAction.equals("D Show") || preAction.equals("D Hit"))
+                                && dealer.getUnknownCardCount() == 0 && player.getUnknownCardCount() == 0
+                                && player.getHandValue() < 22 && dealer.getHandValue() < 17) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "P Win":
-                     
-                        break;
+                        if (((preAction.equals("D Show") || preAction.equals("D Hit"))
+                                && dealer.getUnknownCardCount() == 0 && player.getUnknownCardCount() == 0 && dealer.getHandValue() > 17
+                                && player.getHandValue() < 22 )
+                                && ((player.getHandValue() >= dealer.getHandValue()) || (dealer.getHandValue() > 21))) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
                     case "P Lose":
-                      
-
+                        if (((preAction.equals("D Show") || preAction.equals("D Hit") || preAction.equals("P Hit"))
+                                && dealer.getUnknownCardCount() < 2 && player.getUnknownCardCount() == 0)
+                                && ((player.getHandValue() < dealer.getHandValue()) || (player.getHandValue() > 21)) && (dealer.getHandValue() < 22)) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
+                    case "D Redeal":
+                        if ((preAction.equals("P Win") || preAction.equals("P Lose"))
+                                && dealer.getUnknownCardCount() == 1 && dealer.getCardCount() == 2
+                                && player.getCardCount() == 2 && player.getUnknownCardCount() == 0) {
+                            break;
+                        } else {
+                            unsatisfiedTurns.add(turn.toString());
+                            satisfied = false;
+                            break;
+                        }
+                }
+                if (satisfied == false) {
+                    break;
+                }
             }
         }
+        return unsatisfiedTurns;
     }
-}
 }
