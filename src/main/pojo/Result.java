@@ -1,4 +1,4 @@
-package main;
+package main.pojo;
 
 public class Result {
 

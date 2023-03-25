@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import main.pojo.Game;
+import main.pojo.Result;
 import main.pojo.Turn;
 
 /**
