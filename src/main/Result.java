@@ -1,9 +1,10 @@
+package main;
+
 public class Result {
 
     private int handValue;
     private int unknownCardCount;
     private int cardCount;
-
 
     public Result() {
     }
@@ -56,10 +57,10 @@ public class Result {
     @Override
     public String toString() {
         return "{" +
-            " handValue='" + getHandValue() + "'" +
-            ", unknownCardCount='" + getUnknownCardCount() + "'" +
-            ", cardCount='" + getCardCount() + "'" +
-            "}";
+                " handValue='" + getHandValue() + "'" +
+                ", unknownCardCount='" + getUnknownCardCount() + "'" +
+                ", cardCount='" + getCardCount() + "'" +
+                "}";
     }
 
 }

@@ -1,4 +1,4 @@
-package pojo;
+package main.pojo;
 
 public class Turn {
     private Long time;

@@ -1,9 +1,22 @@
+package main;
+
+/**
+ * 
+ * A class to calculate the value of a given hand.
+ */
 public class HandCalculator {
+    /**
+     * Calculates the value of a given hand represented as a string.
+     * 
+     * @param hand the hand to be evaluated
+     * @return an integer array representing the value of the hand, the number of
+     *         unknown cards and the total number of cards in the hand
+     */
     public int[] calculateHand(String hand) {
         int handValue = 0;
         int questionCount = 0;
         String[] cards = hand.split("-");
-        
+
         for (String card : cards) {
             if (!card.equals("?")) {
                 char value = card.charAt(0);
@@ -52,8 +65,8 @@ public class HandCalculator {
                 questionCount++;
             }
         }
-        
-        return new int[] {handValue, questionCount, cards.length};
+
+        return new int[] { handValue, questionCount, cards.length };
     }
-    
+
 }
