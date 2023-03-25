@@ -12,7 +12,6 @@ import main.pojo.Turn;
  * RuleChecker class checks the validity of each turn of a game using
  * HandCalculator
  * 
- * and returns a list of faulty turns
  */
 public class RuleChecker {
     /**
